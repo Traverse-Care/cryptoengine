@@ -6,15 +6,17 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/nacl/box"
-	"golang.org/x/crypto/nacl/secretbox"
 	"log"
 	"math"
 	"net/url"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"sync"
+
+	"golang.org/x/crypto/nacl/box"
+	"golang.org/x/crypto/nacl/secretbox"
 )
 
 const (
@@ -156,6 +158,12 @@ func generateSecretKey() ([keySize]byte, error) {
 // if the file is older than N days (default 2) generate a new one and overwrite the old
 // TODO: rotate the salt file
 func loadSalt(id string) ([keySize]byte, error) {
+	envVal, envPresent := os.LookupEnv("CRYPTO_ENGINE_SALT")
+	if envPresent {
+		var data32 [keySize]byte
+		copy(data32[:], envVal[:keySize])
+		return data32, nil
+	}
 
 	var salt [keySize]byte
 
@@ -182,6 +190,12 @@ func loadSalt(id string) ([keySize]byte, error) {
 // load the key random bytes from the id_secret.key
 // if the file does not exist, create a new one
 func loadSecretKey(id string) ([keySize]byte, error) {
+	envVal, envPresent := os.LookupEnv("CRYPTO_ENGINE_SECRET_KEY")
+	if envPresent {
+		var data32 [keySize]byte
+		copy(data32[:], envVal[:keySize])
+		return data32, nil
+	}
 
 	var key [keySize]byte
 
@@ -208,6 +222,12 @@ func loadSecretKey(id string) ([keySize]byte, error) {
 // load the nonce key random bytes from the id_nonce.key
 // if the file does not exist, create a new one
 func loadNonceKey(id string) ([keySize]byte, error) {
+	envVal, envPresent := os.LookupEnv("CRYPTO_ENGINE_NONCE_KEY")
+	if envPresent {
+		var data32 [keySize]byte
+		copy(data32[:], envVal[:keySize])
+		return data32, nil
+	}
 
 	var nonceKey [keySize]byte
 
@@ -235,6 +255,15 @@ func loadNonceKey(id string) ([keySize]byte, error) {
 // if the files do not exist, create them
 // Returns the publicKey, privateKey, error
 func loadKeyPairs(id string) ([keySize]byte, [keySize]byte, error) {
+	privKeyVal, privKeyPresent := os.LookupEnv("CRYPTO_ENGINE_PRIVATE_KEY")
+	pubKeyVal, pubKeyPresent := os.LookupEnv("CRYPTO_ENGINE_PUBLIC_KEY")
+	if privKeyPresent && pubKeyPresent {
+		var private [keySize]byte
+		var public [keySize]byte
+		copy(private[:], privKeyVal[:keySize])
+		copy(public[:], pubKeyVal[:keySize])
+		return public, private, nil
+	}
 
 	var private [keySize]byte
 	var public [keySize]byte
