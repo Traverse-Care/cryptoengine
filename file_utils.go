@@ -55,7 +55,6 @@ func readFile(filename string) ([]byte, error) {
 // If the file already exists then it returns the specific error: os.ErrExist
 // This is thanks to the flag O_CREATE
 func writeFile(filename string, data []byte) error {
-
 	if fileExists(filename) {
 		return os.ErrExist
 	}
@@ -68,7 +67,20 @@ func writeFile(filename string, data []byte) error {
 
 	_, err = file.Write(data)
 	return err
+}
 
+func readKeyFromString(dataString string) ([keySize]byte, error) {
+	data := []byte(dataString)
+	var data32 [keySize]byte
+	// decode from hex
+	dst := make([]byte, len(data))
+	_, err := hex.Decode(dst, data) //.StdEncoding.Decode(dst, data)
+	if err != nil {
+		return data32, err
+	}
+	// fill in the 32 byte array with the data and return it
+	copy(data32[:], dst[:keySize])
+	return data32, err
 }
 
 // Read the key file into a 32 byte array
@@ -86,7 +98,7 @@ func readKey(filename, pathFormat string) ([keySize]byte, error) {
 	if err != nil {
 		return data32, err
 	}
-	// fill in the 32 byte array witht he data and return it
+	// fill in the 32 byte array with the data and return it
 	copy(data32[:], dst[:keySize])
 	return data32, err
 }

@@ -160,9 +160,7 @@ func generateSecretKey() ([keySize]byte, error) {
 func loadSalt(id string) ([keySize]byte, error) {
 	envVal, envPresent := os.LookupEnv("CRYPTO_ENGINE_SALT")
 	if envPresent {
-		var data32 [keySize]byte
-		copy(data32[:], envVal[:keySize])
-		return data32, nil
+		return readKeyFromString(envVal)
 	}
 
 	var salt [keySize]byte
@@ -192,9 +190,7 @@ func loadSalt(id string) ([keySize]byte, error) {
 func loadSecretKey(id string) ([keySize]byte, error) {
 	envVal, envPresent := os.LookupEnv("CRYPTO_ENGINE_SECRET_KEY")
 	if envPresent {
-		var data32 [keySize]byte
-		copy(data32[:], envVal[:keySize])
-		return data32, nil
+		return readKeyFromString(envVal)
 	}
 
 	var key [keySize]byte
@@ -224,9 +220,7 @@ func loadSecretKey(id string) ([keySize]byte, error) {
 func loadNonceKey(id string) ([keySize]byte, error) {
 	envVal, envPresent := os.LookupEnv("CRYPTO_ENGINE_NONCE_KEY")
 	if envPresent {
-		var data32 [keySize]byte
-		copy(data32[:], envVal[:keySize])
-		return data32, nil
+		return readKeyFromString(envVal)
 	}
 
 	var nonceKey [keySize]byte
@@ -258,11 +252,9 @@ func loadKeyPairs(id string) ([keySize]byte, [keySize]byte, error) {
 	privKeyVal, privKeyPresent := os.LookupEnv("CRYPTO_ENGINE_PRIVATE_KEY")
 	pubKeyVal, pubKeyPresent := os.LookupEnv("CRYPTO_ENGINE_PUBLIC_KEY")
 	if privKeyPresent && pubKeyPresent {
-		var private [keySize]byte
-		var public [keySize]byte
-		copy(private[:], privKeyVal[:keySize])
-		copy(public[:], pubKeyVal[:keySize])
-		return public, private, nil
+		private, err := readKeyFromString(privKeyVal)
+		public, err := readKeyFromString(pubKeyVal)
+		return public, private, err
 	}
 
 	var private [keySize]byte
