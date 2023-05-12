@@ -1,4 +1,4 @@
-module github.com/sec51/cryptoengine
+module github.com/Traverse-Care/cryptoengine
 
 go 1.18
 
