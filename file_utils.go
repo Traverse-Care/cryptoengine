@@ -21,6 +21,11 @@ var (
 
 // create the keys folder if it does not exist, with the proper permission
 func init() {
+	// Skip creation if the user is supplying keys via the environment
+	if os.Getenv("CRYPTO_ENGINE_PRIVATE_KEY") != "" {
+		return
+	}
+
 	if os.Getenv("SEC51_KEYPATH") != "" {
 		keyPath = os.Getenv("SEC51_KEYPATH")
 	} else {

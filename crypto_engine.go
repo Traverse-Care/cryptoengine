@@ -251,7 +251,7 @@ func loadNonceKey(id string) ([keySize]byte, error) {
 func loadKeyPairs(id string) ([keySize]byte, [keySize]byte, error) {
 	privKeyVal, privKeyPresent := os.LookupEnv("CRYPTO_ENGINE_PRIVATE_KEY")
 	pubKeyVal, pubKeyPresent := os.LookupEnv("CRYPTO_ENGINE_PUBLIC_KEY")
-	if privKeyPresent && pubKeyPresent {
+	if privKeyPresent && pubKeyPresent && privKeyVal != "" && pubKeyVal != "" {
 		private, err := readKeyFromString(privKeyVal)
 		public, err := readKeyFromString(pubKeyVal)
 		return public, private, err

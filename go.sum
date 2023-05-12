@@ -1,0 +1,4 @@
+github.com/sec51/convert v0.0.0-20180911111603-3276ac712ca3 h1:Yfrdi593aEpDo/6QADiYyFHmIoPm9zOEtlQAHpo/0xg=
+github.com/sec51/convert v0.0.0-20180911111603-3276ac712ca3/go.mod h1:SRX4rc9r9AHj56zHfvY1XBPwhLU0vFZdIX7HaD1C3z8=
+golang.org/x/crypto v0.0.0-20151120201419-beef0f439081 h1:Pmlkv+UkNMx18O/oeAbr4BQZSewYOl1jsf8k7K1cbu4=
+golang.org/x/crypto v0.0.0-20151120201419-beef0f439081/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
