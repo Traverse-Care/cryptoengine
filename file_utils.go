@@ -19,26 +19,6 @@ var (
 	testKeysFolderPrefixFormat string
 )
 
-// create the keys folder if it does not exist, with the proper permission
-func init() {
-	// Skip creation if the user is supplying keys via the environment
-	if os.Getenv("CRYPTO_ENGINE_PRIVATE_KEY") != "" {
-		return
-	}
-
-	if os.Getenv("SEC51_KEYPATH") != "" {
-		keyPath = os.Getenv("SEC51_KEYPATH")
-	} else {
-		keyPath = "keys"
-	}
-
-	keysFolderPrefixFormat = filepath.Join(keyPath, "%s")
-	testKeysFolderPrefixFormat = filepath.Join(testKeyPath, "%s")
-	if err := createBaseKeyFolder(keyPath); err != nil {
-		log.Println(err)
-	}
-}
-
 // Check if a file exists
 func fileExists(filename string) bool {
 	_, err := os.Stat(filename)
@@ -62,6 +42,19 @@ func readFile(filename string) ([]byte, error) {
 func writeFile(filename string, data []byte) error {
 	if fileExists(filename) {
 		return os.ErrExist
+	}
+
+	// Check if base key folder already exists and if not create it
+	if os.Getenv("SEC51_KEYPATH") != "" {
+		keyPath = os.Getenv("SEC51_KEYPATH")
+	} else {
+		keyPath = "keys"
+	}
+
+	keysFolderPrefixFormat = filepath.Join(keyPath, "%s")
+	testKeysFolderPrefixFormat = filepath.Join(testKeyPath, "%s")
+	if err := createBaseKeyFolder(keyPath); err != nil {
+		log.Println(err)
 	}
 
 	file, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE, 0400)
